@@ -1,9 +1,8 @@
-let totalCash = 0;
-let totalHours = 0;
+var totalCash = 0;
+var totalHours = 0;
 
 window.onload = (event) => {
   // localStorage.setItem("employees",["Jordan", "Coye", "Andi"])
-
   setupAdd();
   checkForEmployees();
 };
@@ -106,4 +105,17 @@ function addEmployee(newEmployee, index) {
 
   liEntry.append(newDiv);
   employeeList.append(liEntry);
+}
+
+function tipsCalc(hours) {
+  return Math.floor(totalCash * hours / totalHours);
+}
+
+function totalHoursCalc() {
+  let hoursArray = document.querySelectorAll("li input");
+  totalHours = 0;
+  for (let i=0; i<hoursArray.length; i++) {
+    totalHours += parseFloat(hoursArray[i].value);
+  }
+  console.log(totalHours);
 }
