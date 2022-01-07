@@ -97,6 +97,7 @@ function addEmployee(newEmployee, index) {
   hoursWorked.setAttribute("name", "hoursWorked");
   hoursWorked.setAttribute("type","number");
   hoursWorked.setAttribute("value", "0");
+  hoursWorked.classList.add("hoursInput");
 
   hoursWorked.addEventListener("change", () =>{
     var inputValue = parseFloat(hoursWorked.value);
@@ -120,7 +121,7 @@ function addEmployee(newEmployee, index) {
   let deleteSpan = document.createElement("span");
   deleteSpan.classList.add("delete");
   let boldDelete = document.createElement("b");
-  boldDelete.innerText = "X";
+  boldDelete.innerText = "Remove Employee";
 
   let calcButton = document.getElementById("calcButton");
   if (calcButton.style.display == "none") {

@@ -1,0 +1,58 @@
+html {
+  min-height: 100%;
+  background: rgb(195,195,195);
+  background: linear-gradient(337deg, rgba(205,205,205,1) 0%, rgba(224,224,224,1) 5%, rgba(255,255,255,1) 100%);
+}
+
+body {
+  font-family: 'PT Serif', serif;
+}
+
+h1 {
+  font-size: 4rem;
+  width: 100%;
+  text-align: center;
+  font-family: 'Rye', cursive;
+  margin-bottom: 10px;
+}
+
+h2 {
+  width: 100%;
+  text-align: center;
+  font-family: 'Rye', cursive;
+}
+
+@media (orientation: landscape) {
+  .content {
+    width: max-content;
+    margin-left: 25%;
+    margin-right: 25%;
+  }
+}
+#totalCash {
+  width: 50px;
+}
+.hoursInput {
+  width: 50px;
+}
+#employees {
+  list-style-type: none;
+  padding-left: 10px;
+  margin-bottom: 20px;
+}
+li {
+  padding-bottom: 15px;
+}
+.employee * {
+  margin-right: 10px;
+}
+.delete {
+  color: red;
+  font-size: 0.7rem;
+}
+#calcButton {
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 16px;
+  background-color: #11ed66;
+}
