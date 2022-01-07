@@ -6,16 +6,22 @@
     <script src="./tipCalc.js" charset="utf-8"></script>
   </head>
   <body>
-    <h1>Jobi's Magnificent Manipulator of Money</h1>
+    <h1>Tip & Dip</h1>
     <h2>A calculator of cash and compensation!</h2>
     <div class="content">
       <label for="totalCash">Total cash:</label>
-      <input type="text" name="totalCash" value="">
+      <input id="totalCash" type="number" name="totalCash">
       <ul id="employees">
 
       </ul>
+      <button id="calcButton" type="button" name="calcButton">Calculate</button>
       <div id="addSection">
         <span id="add"><b>+</b></span> add employee
+        <div id="newEmployee">
+          <label for="name">Employee name: </label>
+          <input id="newName" type="text" class="name" name="name" value="">
+          <button id="addButton" type="button" name="addButton">Add</button>
+        </div>
       </div>
     </div>
   </body>

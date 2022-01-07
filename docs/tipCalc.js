@@ -2,9 +2,32 @@ var totalCash = 0;
 var totalHours = 0;
 
 window.onload = (event) => {
-  // localStorage.setItem("employees",["Jordan", "Coye", "Andi"])
-  setupAdd();
-  checkForEmployees();
+  let calcButton = document.getElementById("calcButton");
+  calcButton.style.display = "none";
+
+  calcButton.addEventListener("click",()=>{
+    displayTipsCalc();
+  });
+
+  var employees = [];
+  if (checkForEmployees() === true) {
+    employees = localStorage.getItem("employees").split(",");
+  }
+
+  let totalCashInput = document.getElementById("totalCash");
+  totalCashInput.value = 0;
+  totalCashInput.addEventListener("change", ()=>{
+    var inputValue = parseFloat(totalCashInput.value);
+    if (isNaN(inputValue)) {
+      alert("Total Cash amount not a number. Please enter a valid value.");
+    } else {
+      totalCash = inputValue;
+    }
+  });
+
+
+  setupAddButton(employees);
+  populateEmployeeList(employees);
 };
 
 // checks local storage for employees and populates, the page on success
@@ -12,12 +35,15 @@ window.onload = (event) => {
 function checkForEmployees() {
   if (localStorage.length === 0) {
     console.log("localStorage currently empty");
+    return false;
   } else if (localStorage.length > 0) {
     let employees = localStorage.getItem("employees").split(",");
     console.log(employees);
     if (employees.length && employees.length > 0) {
-      populateEmployeeList(employees);
+      return true;
+      // populateEmployeeList(employees);
     }
+    return false;
   }
 }
 
@@ -31,23 +57,12 @@ function populateEmployeeList(employees) {
   }
 }
 
-function setupAdd() {
-  let employees = localStorage.getItem("employees").split(",");
+function setupAddButton(employees) {
+  // let employees = localStorage.getItem("employees").split(",");
 
-  let addSection = document.getElementById("addSection");
-  let add = document.getElementById("add");
+  let addButton = document.getElementById("addButton");
+  let nameInput = document.getElementById("newName");
 
-  let newEmployeeDiv = document.createElement("div");
-  newEmployeeDiv.id = "newEmployee";
-  let nameInput = document.createElement("input");
-  nameInput.classList.add("name");
-  nameInput.setAttribute("name","name");
-  let nameLabel = document.createElement("label");
-  nameLabel.htmlFor = "name";
-  nameLabel.innerText = "Employee name:";
-
-  let addButton = document.createElement("button");
-  addButton.innerText = "Add";
   addButton.addEventListener("click", () => {
     let newEmployee = nameInput.value;
     employees.push(newEmployee);
@@ -55,17 +70,10 @@ function setupAdd() {
     let employeeIndex = employees.length-1;
     addEmployee(newEmployee, employeeIndex);
   });
-
-  newEmployeeDiv.appendChild(nameLabel);
-  newEmployeeDiv.appendChild(nameInput);
-  newEmployeeDiv.appendChild(addButton);
-
-  addSection.appendChild(newEmployeeDiv);
-
 }
 
 function addEmployee(newEmployee, index) {
-  let employees = localStorage.getItem("employees").split(",");
+  var employees = localStorage.getItem("employees").split(",");
 
   let employeeList = document.getElementById("employees");
 
@@ -76,7 +84,6 @@ function addEmployee(newEmployee, index) {
   //create a piece of text for employee name
   let nameDiv = document.createElement("div");
   nameDiv.classList.add("name");
-  nameDiv.id = "name" + index;
 
   let nameDisplay = document.createTextNode(employees[index]);
   nameDiv.appendChild(nameDisplay);
@@ -88,23 +95,67 @@ function addEmployee(newEmployee, index) {
 
   let hoursWorked = document.createElement("input");
   hoursWorked.setAttribute("name", "hoursWorked");
+  hoursWorked.setAttribute("type","number");
+  hoursWorked.setAttribute("value", "0");
+
+  hoursWorked.addEventListener("change", () =>{
+    var inputValue = parseFloat(hoursWorked.value);
+    if (isNaN(inputValue)) {
+      alert("hours worked value is not a number. Please enter a valid value.");
+    }
+  });
+
   newDiv.appendChild(hoursLabel);
   newDiv.appendChild(hoursWorked);
 
   let tipsOwed = document.createElement("b");
   tipsOwed.innerText = "Tips owed: $";
+
+  let tipsOwedAmount = document.createElement("span");
+  tipsOwedAmount.classList.add("tips");
+  tipsOwedAmount.innerText = 0;
   newDiv.appendChild(tipsOwed);
+  newDiv.appendChild(tipsOwedAmount);
 
   let deleteSpan = document.createElement("span");
   deleteSpan.classList.add("delete");
   let boldDelete = document.createElement("b");
   boldDelete.innerText = "X";
 
+  let calcButton = document.getElementById("calcButton");
+  if (calcButton.style.display == "none") {
+    calcButton.style.display = "block";
+  }
+
+  deleteSpan.addEventListener("click", ()=>{
+    var parentDiv = deleteSpan.parentElement;
+    var currentEmployee = parentDiv.getElementsByClassName("name");
+    var currentEmployeeName = currentEmployee[0].innerText;
+
+    employees = localStorage.getItem("employees").split(",");
+    var indexOfEmployee = employees.indexOf(currentEmployeeName);
+
+    // console.log(indexOfEmployee);
+    if (indexOfEmployee >= 0) {
+      employees.splice(indexOfEmployee, 1);
+      if (employees.length > 0) {
+        localStorage.setItem("employees", employees);
+      } else {
+        localStorage.removeItem("employees");
+        calcButton.style.display = "none";
+      }
+      var parentLi = parentDiv.parentElement;
+      parentLi.remove();
+      console.log(employees);
+    }
+  });
+
   deleteSpan.appendChild(boldDelete);
   newDiv.appendChild(deleteSpan);
 
   liEntry.append(newDiv);
   employeeList.append(liEntry);
+
 }
 
 function tipsCalc(hours) {
@@ -115,7 +166,26 @@ function totalHoursCalc() {
   let hoursArray = document.querySelectorAll("li input");
   totalHours = 0;
   for (let i=0; i<hoursArray.length; i++) {
-    totalHours += parseFloat(hoursArray[i].value);
+    var employeeHours = parseFloat(hoursArray[i].value)
+    if (isNaN(employeeHours)) {
+      alert("Error calculating total hours. Ensure all employees have hours entered in number format.");
+      return;
+    }
+    totalHours += employeeHours;
   }
-  console.log(totalHours);
+}
+
+function displayTipsCalc() {
+  totalHoursCalc();
+  let hoursArray = document.querySelectorAll("li input");
+  let tipsDisplays = document.querySelectorAll("li .tips");
+
+  for (let i=0; i<hoursArray.length; i++) {
+    var employeeHours = parseFloat(hoursArray[i].value)
+    if (isNaN(employeeHours)) {
+      alert("Error calculating total hours. Ensure all employees have hours entered in number format.");
+      return;
+    }
+    tipsDisplays[i].innerText = tipsCalc(employeeHours);
+  }
 }
